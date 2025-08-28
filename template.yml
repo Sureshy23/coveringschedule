@@ -8,7 +8,7 @@ Globals:
     Timeout: 30
 
 Resources:
-  MyDependenciesLayer:
+  LayerCoveringSchedule:
     Type: AWS::Serverless::LayerVersion
     Properties:
       ContentUri: ./layer_deps
