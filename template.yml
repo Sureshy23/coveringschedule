@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  A function to generate a pdf and save it in sharepoint
+
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  MyDependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ./layer_deps
+      CompatibleRuntimes:
+        - python3.12
+      RetentionPolicy: Retain
+
+  SendEmailSwiftDetailsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: lambdafunction.lambda_handler
+      Runtime: python3.12
+      Layers:
+        - !Ref LayerCoveringSchedule
+
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /create
+            Method: POST
+
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            - Effect: Allow
+              Action: "ses:SendRawEmail"
+              Resource: "*"
